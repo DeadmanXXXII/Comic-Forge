@@ -105,6 +105,113 @@
     border-left: 3px solid var(--amber); padding:8px 12px; background:#120c00;
     font-size:0.82rem; opacity:0.9; border-radius:0 4px 4px 0; margin-top:10px;
   }
+
+  /* ---- story-format toggle (JSON / Markdown) ---- */
+  .format-toggle { display:flex; gap:6px; margin-bottom:10px; }
+  .format-toggle button.active { background: var(--cyan); color:#160404; border-color: var(--cyan); }
+
+  /* ---- issue grouping in Panels & Art ---- */
+  .issue-heading {
+    margin: 18px 0 8px; padding-bottom:6px; border-bottom:2px solid var(--cyan);
+    font-family:"SF Mono","Consolas","Courier New",monospace; text-transform:uppercase;
+    letter-spacing:0.05em; font-size:0.9rem;
+  }
+  .issue-heading:first-child { margin-top:0; }
+  .cover-item, .hero-item { border-left-color: var(--magenta) !important; }
+  .page-label { font-size:0.72rem; opacity:0.6; text-transform:uppercase; letter-spacing:0.06em; margin:10px 0 2px; }
+
+  /* ---- dialogue editor ---- */
+  .dialogue-row { display:flex; gap:6px; align-items:flex-start; margin-top:8px; flex-wrap:wrap; }
+  .dialogue-row select { flex: 0 0 110px; }
+  .dialogue-row input.dSpeaker { flex: 0 0 120px; }
+  .dialogue-row textarea.dLine { flex: 1 1 160px; min-height:38px; }
+  .dialogue-row button.removeDialogueBtn { flex: 0 0 auto; margin-top:0; padding:8px 10px; }
+  .addDialogueBtn { margin-top:8px; }
+
+  /* ---- art thumbnails ---- */
+  img.artThumb { display:none; }
+  img.artThumb[src]:not([src=""]) { display:block; }
+
+  /* ---- bubble/narration placement editor ---- */
+  .posCanvas {
+    position:relative; width:100%; aspect-ratio:1/1; margin-top:8px;
+    background:#111 center/cover no-repeat; border:1px dashed var(--panel-border);
+    border-radius:2px; touch-action:none;
+  }
+  .posMarker {
+    position:absolute; transform:translate(-50%,-50%); width:26px; height:26px;
+    border-radius:50%; background:var(--cyan); color:#160404; font-size:0.62rem;
+    display:flex; align-items:center; justify-content:center; font-weight:700;
+    cursor:grab; user-select:none; box-shadow:0 0 0 2px rgba(0,0,0,0.5); z-index:2;
+  }
+  .posMarker:active { cursor:grabbing; }
+  .posMarker.narrationMarker { background: var(--amber); }
+
+  /* ---- export: paginated comic pages ---- */
+  #exportPreview { background:#fff; color:#111; padding:0; border-radius:4px; overflow:hidden; }
+  .export-page {
+    position:relative; width:100%; aspect-ratio: 3/4; background:#fff; color:#111;
+    overflow:hidden; break-after:page; page-break-after:always;
+    border-bottom:2px dashed #999;
+  }
+  .export-page:last-child { break-after:auto; page-break-after:auto; border-bottom:none; }
+  .export-cover, .export-hero {
+    position:relative; width:100%; height:100%;
+  }
+  .export-cover img, .export-hero img {
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+  }
+  .export-cover .scrim, .export-hero .scrim {
+    position:absolute; left:0; right:0; bottom:0; height:45%;
+    background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0));
+  }
+  .export-cover .titleBlock, .export-hero .titleBlock {
+    position:absolute; left:0; right:0; bottom:0; padding:24px; color:#fff;
+  }
+  .export-cover .titleBlock h2 { margin:0 0 6px; font-size:1.8rem; font-family:"SF Mono",monospace; }
+  .export-cover .titleBlock p, .export-hero .titleBlock p { margin:0; font-size:1rem; opacity:0.9; }
+  .export-hero .titleBlock h3 { margin:0 0 6px; font-size:1.4rem; font-family:"SF Mono",monospace; }
+  .export-panels-page { display:grid; gap:8px; width:100%; height:100%; padding:12px; }
+  .export-panel-wrap { position:relative; overflow:hidden; background:#222; border-radius:2px; }
+  .export-panel-wrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .export-panel-wrap .placeholder {
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    color:#888; font-size:0.75rem; background:#1c1c1c;
+  }
+  .narration-box {
+    position:absolute; top:8px; left:8px; max-width:70%; background:#f4ecd8; color:#151210;
+    border:2px solid #151210; padding:6px 10px; font-size:0.72rem; line-height:1.25;
+    font-style:italic; box-shadow:3px 3px 0 rgba(0,0,0,0.4); z-index:3;
+  }
+  .bubble {
+    position:absolute; max-width:60%; background:#fff; color:#111; border:2px solid #111;
+    border-radius:14px; padding:6px 10px; font-size:0.72rem; line-height:1.25; z-index:4;
+    box-shadow:2px 2px 0 rgba(0,0,0,0.3);
+  }
+  .bubble .spk { display:block; font-weight:700; font-size:0.62rem; text-transform:uppercase; opacity:0.7; margin-bottom:2px; }
+  .bubble::after {
+    content:""; position:absolute; bottom:-10px; left:20px; width:0; height:0;
+    border:10px solid transparent; border-top-color:#111; border-bottom:0;
+  }
+  .bubble.left::after { left:20px; }
+  .bubble.right::after { left:auto; right:20px; }
+  .bubble.thought { border-radius:50% / 30%; border-style:dashed; }
+  .bubble.thought::after { border-top-color: transparent; border: none; }
+  .bubble.thought::before {
+    content:""; position:absolute; bottom:-16px; left:30px; width:10px; height:10px;
+    border-radius:50%; background:#fff; border:2px dashed #111;
+  }
+  .bubble.screen {
+    background:#0a1a12; color:#4dffb0; border-color:#4dffb0; border-radius:2px;
+    font-family:"SF Mono","Consolas",monospace;
+  }
+  .bubble.screen::after { border-top-color:#4dffb0; }
+  @media print {
+    body * { visibility:hidden; }
+    #exportPreview, #exportPreview * { visibility:visible; }
+    #exportPreview { position:absolute; left:0; top:0; width:100%; }
+    .export-page { break-after:page; page-break-after:always; border:none; }
+  }
 </style>
 </head>
 <body>
@@ -178,24 +285,61 @@
   <!-- STORY DATA -->
   <section id="tab-story">
     <div class="card">
-      <p class="muted">Paste or edit your comic as JSON: an array of issues, each with pages, each with panels.
-      Import the shape your build pipeline already uses, or start from the template.</p>
-      <div class="row">
-        <button class="btn secondary" onclick="loadTemplate()">Load blank template</button>
-        <button class="btn gold" onclick="loadExample()">Load example (2 real panels)</button>
-        <button class="btn secondary" onclick="importJSON()">Import from file</button>
-        <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImportFile(event)">
+      <p class="muted">Build your comic from JSON (issues → pages → panels) or from Markdown in the same
+      script format your build pipeline's source file already uses. Either path ends up as the same JSON below —
+      "Apply to Panels tab" always reads from the JSON box.</p>
+
+      <div class="format-toggle">
+        <button id="fmtBtnJson" class="btn secondary active" onclick="setStoryFormat('json')">JSON</button>
+        <button id="fmtBtnMd" class="btn secondary" onclick="setStoryFormat('md')">Markdown</button>
       </div>
-      <div class="example-note">The example is the exact JSON structure behind the rain-soaked street and
-      hooded-figure panels shown in the app's own screenshots — good reference for how specific a panel
-      description needs to be to come out on-theme.</div>
-      <label>Story JSON</label>
-      <textarea id="storyJSON" style="min-height:300px; font-family:monospace; font-size:0.8rem;"></textarea>
-      <div class="row">
-        <button class="btn" onclick="parseStory()">Apply to Panels tab</button>
-        <button class="btn secondary" onclick="downloadStory()">Download JSON</button>
+
+      <!-- JSON path -->
+      <div id="storyFormatJson">
+        <div class="row">
+          <button class="btn secondary" onclick="loadTemplate()">Load blank template</button>
+          <button class="btn gold" onclick="loadExample()">Load example (2 real panels)</button>
+          <button class="btn secondary" onclick="importJSON()">Import from file</button>
+          <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImportFile(event)">
+        </div>
+        <div class="example-note">The example is the exact JSON structure behind the rain-soaked street and
+        hooded-figure panels shown in the app's own screenshots — good reference for how specific a panel
+        description needs to be to come out on-theme.</div>
+        <label>Story JSON</label>
+        <textarea id="storyJSON" style="min-height:300px; font-family:monospace; font-size:0.8rem;"></textarea>
+        <div class="row">
+          <button class="btn" onclick="parseStory()">Apply to Panels tab</button>
+          <button class="btn secondary" onclick="downloadStory()">Download JSON</button>
+        </div>
+        <div id="storyStatus" class="status"></div>
       </div>
-      <div id="storyStatus" class="status"></div>
+
+      <!-- Markdown path -->
+      <div id="storyFormatMd" style="display:none;">
+        <div class="row">
+          <button class="btn secondary" onclick="loadMdExample()">Load example (Markdown)</button>
+          <button class="btn secondary" onclick="importMD()">Import from file</button>
+          <input type="file" id="importMdFile" accept=".md,.markdown,.txt" style="display:none" onchange="handleImportMdFile(event)">
+        </div>
+        <div class="example-note">
+          Parses the same script format as <code>Anonymous_Heroes_Full_Series_Script.md</code>: one
+          <code>## ISSUE N: "Title"</code> heading per issue, <code>**Page N**</code> and
+          <code>- **Panel N** — description</code> lines, with <code>*Narration:*</code>,
+          <code>*Dialogue (Speaker):*</code>, <code>*Thought (Speaker):*</code>,
+          <code>*Text on screen:*</code>, <code>*Caption:*</code>, and <code>*Image Prompt:*</code> as
+          sub-bullets. Two extra conventions this app adds on top: a <code>**Cover**</code> block right after
+          the issue heading (<code>*Image Prompt:*</code> / <code>*Subtitle:*</code>), and marking a page as a
+          full-bleed splash with <code>**Page N (HERO)**</code> (<code>*Image Prompt:*</code> /
+          <code>*Caption:*</code> instead of panels). Everything before the first <code>## ISSUE</code>
+          heading (series bible, act headers) is ignored, so you can paste your whole script file in as-is.
+        </div>
+        <label>Story Markdown</label>
+        <textarea id="storyMD" style="min-height:300px; font-family:monospace; font-size:0.8rem;"></textarea>
+        <div class="row">
+          <button class="btn" onclick="convertMdToJson()">Convert to JSON</button>
+        </div>
+        <div id="mdStatus" class="status"></div>
+      </div>
     </div>
   </section>
 
@@ -212,6 +356,7 @@
         <button class="btn" onclick="generateAll()">Generate all missing</button>
       </div>
       <div class="status" id="panelsStatus">No story loaded — go to Story Data tab first.</div>
+      <div class="status" id="orphanStatus" style="display:none;"></div>
     </div>
     <div id="panelList"></div>
   </section>
@@ -236,6 +381,95 @@ provider you configure, using your own key.</footer>
 // ---------------------------------------------------------------- state ---
 let story = null; // { issues: [...] }
 const DB_NAME = "comicforge";
+
+// ------------------------------------------------------- art storage (IDB) -
+// Generated panel/cover/hero art is large (often 1MB+ per PNG as a data URL).
+// localStorage caps out around 5-10MB total in most browsers, so it was
+// silently failing after roughly 5-8 panels. IndexedDB has no such practical
+// limit. We keep an in-memory cache (artCache) so getArt() stays synchronous
+// for the renderer, and mirror every write into IndexedDB in the background.
+let idb = null;
+const artCache = new Map();
+
+function openArtDB(){
+  return new Promise((resolve, reject)=>{
+    if(!("indexedDB" in window)) { reject(new Error("IndexedDB unavailable")); return; }
+    const req = indexedDB.open(DB_NAME, 1);
+    req.onupgradeneeded = e => {
+      const db = e.target.result;
+      if(!db.objectStoreNames.contains("art")) db.createObjectStore("art");
+    };
+    req.onsuccess = e => resolve(e.target.result);
+    req.onerror = e => reject(e.target.error);
+  });
+}
+function idbSet(key, val){
+  return new Promise((resolve, reject)=>{
+    if(!idb){ resolve(); return; }
+    const tx = idb.transaction("art", "readwrite");
+    tx.objectStore("art").put(val, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = e => reject(e.target.error);
+  });
+}
+function idbGetAll(){
+  return new Promise((resolve, reject)=>{
+    const tx = idb.transaction("art", "readonly");
+    const store = tx.objectStore("art");
+    const keysReq = store.getAllKeys();
+    const valsReq = store.getAll();
+    let keys, vals;
+    function maybeDone(){ if(keys !== undefined && vals !== undefined) resolve({keys, vals}); }
+    keysReq.onsuccess = () => { keys = keysReq.result; maybeDone(); };
+    valsReq.onsuccess = () => { vals = valsReq.result; maybeDone(); };
+    keysReq.onerror = valsReq.onerror = e => reject(e.target.error);
+  });
+}
+// One-time migration: anything saved by an older build under localStorage
+// (keys like "comicforge_art_...") gets copied into IndexedDB, then removed
+// from localStorage so it stops counting against the 5-10MB quota.
+async function migrateArtFromLocalStorage(){
+  const prefix = DB_NAME + "_art_";
+  const toRemove = [];
+  for(let i = 0; i < localStorage.length; i++){
+    const k = localStorage.key(i);
+    if(k && k.startsWith(prefix)){
+      const val = localStorage.getItem(k);
+      artCache.set(k, val);
+      try { await idbSet(k, val); toRemove.push(k); } catch(e){ /* leave it, retry next load */ }
+    }
+  }
+  toRemove.forEach(k => localStorage.removeItem(k));
+}
+async function initArtStorage(){
+  try {
+    idb = await openArtDB();
+    const {keys, vals} = await idbGetAll();
+    keys.forEach((k, i) => artCache.set(k, vals[i]));
+    await migrateArtFromLocalStorage();
+  } catch(e){
+    console.error("IndexedDB unavailable, art will only persist for this tab session.", e);
+  }
+}
+function artKey(issueSlug, kind, page, panelId){
+  if(kind === "cover") return `${DB_NAME}_art_${issueSlug}_cover`;
+  if(kind === "hero") return `${DB_NAME}_art_${issueSlug}_p${page}_hero`;
+  return `${DB_NAME}_art_${issueSlug}_p${page}_panel${panelId}`;
+}
+function idbDelete(key){
+  return new Promise((resolve, reject)=>{
+    if(!idb){ resolve(); return; }
+    const tx = idb.transaction("art", "readwrite");
+    tx.objectStore("art").delete(key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = e => reject(e.target.error);
+  });
+}
+function getArt(key){ return artCache.get(key) || null; }
+function setArt(key, dataUrl){
+  artCache.set(key, dataUrl);
+  idbSet(key, dataUrl).catch(e => console.error("IndexedDB write failed", e));
+}
 
 function toggleTheme(){
   const r = document.documentElement;
@@ -313,15 +547,32 @@ function setStatus(id, msg, cls){
 }
 
 // ----------------------------------------------------------- story data ---
+function slugify(s){
+  return String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"") || "issue";
+}
+function saveStoryToStorage(){
+  if(story) localStorage.setItem(DB_NAME+"_story", JSON.stringify(story));
+}
+function setStoryFormat(fmt){
+  const isJson = fmt === "json";
+  document.getElementById("storyFormatJson").style.display = isJson ? "" : "none";
+  document.getElementById("storyFormatMd").style.display = isJson ? "none" : "";
+  document.getElementById("fmtBtnJson").classList.toggle("active", isJson);
+  document.getElementById("fmtBtnMd").classList.toggle("active", !isJson);
+}
 function loadTemplate(){
   const tmpl = {
     issues: [
-      { number:1, slug:"issue-1", title:"Issue One", pages:[
-        { page:1, panels:[
-          { id:1, description:"Wide establishing shot, rain-soaked cyberpunk city at night, neon signs reflected in puddles.", image_prompt:null },
-          { id:2, description:"Hooded figure in an alley, glowing white eyes visible under the hood.", image_prompt:null }
-        ]}
-      ]}
+      { number:1, slug:"issue-1", title:"Issue One",
+        cover: { image_prompt: "Cover art prompt here.", subtitle: "Optional subtitle" },
+        pages:[
+          { page:1, panels:[
+            { id:1, shot:"Wide establishing shot", description:"Rain-soaked cyberpunk city at night, neon signs reflected in puddles.", narration:null, dialogue:[], image_prompt:null },
+            { id:2, shot:"Close-up", description:"Hooded figure in an alley, glowing white eyes visible under the hood.", narration:null, dialogue:[{type:"dialogue", speaker:"Someone", line:"Line of dialogue."}], image_prompt:null }
+          ]},
+          { page:2, hero:true, image_prompt:"Full-bleed splash art prompt here.", caption:"Optional caption over the splash.", panels:[] }
+        ]
+      }
     ]
   };
   document.getElementById("storyJSON").value = JSON.stringify(tmpl, null, 2);
@@ -333,32 +584,22 @@ function loadExample(){
         number: 1,
         slug: "test-issue",
         title: "Test Issue",
+        cover: { image_prompt: "Rain-soaked cyberpunk skyline at night, hooded silhouette in foreground, moody neon lighting.", subtitle: "Every ghost has a beginning." },
         pages: [
           {
             page: 1,
             panels: [
-              {
-                id: 1,
-                description: "Wide establishing shot, rain-soaked cyberpunk city at night, neon signs reflected in wet streets, a monorail crossing overhead.",
-                image_prompt: null
-              },
-              {
-                id: 2,
-                description: "Hooded figure standing in a dark alley, glowing white eyes visible under the hood, streetlight overhead.",
-                image_prompt: null
-              }
+              { id: 1, shot:"Wide establishing shot", description: "Wide establishing shot, rain-soaked cyberpunk city at night, neon signs reflected in wet streets, a monorail crossing overhead.", narration: null, dialogue: [], image_prompt: null },
+              { id: 2, shot:"Medium", description: "Hooded figure standing in a dark alley, glowing white eyes visible under the hood, streetlight overhead.", narration: null, dialogue: [{type:"dialogue", speaker:"Anonymous", line:"Too close. I need people who don't need me to be perfect."}], image_prompt: null }
             ]
           },
           {
             page: 2,
             panels: [
-              {
-                id: 3,
-                description: "Close on a hacker's hands typing across three monitors, green and cyan code cascading down the screens.",
-                image_prompt: null
-              }
+              { id: 3, shot:"Close on hands", description: "Close on a hacker's hands typing across three monitors, green and cyan code cascading down the screens.", narration: "The first thread.", dialogue: [], image_prompt: null }
             ]
-          }
+          },
+          { page: 3, hero: true, image_prompt: "Full-bleed splash: a data packet arriving on a terminal screen, encrypted, signed with a glowing hat icon, dark room.", caption: "He didn't know yet it would become a rope." }
         ]
       }
     ]
@@ -376,7 +617,7 @@ function handleImportFile(ev){
 function parseStory(){
   try {
     story = JSON.parse(document.getElementById("storyJSON").value);
-    localStorage.setItem(DB_NAME+"_story", JSON.stringify(story));
+    saveStoryToStorage();
     setStatus("storyStatus", "Loaded. Switch to Panels & Art tab.", "ok");
     renderPanelList();
   } catch(e){
@@ -399,15 +640,364 @@ function loadStoryFromStorage(){
   }
 }
 
-// ----------------------------------------------------------- art cache ---
-function artKey(issueSlug, page, panelId){ return `${DB_NAME}_art_${issueSlug}_p${page}_panel${panelId}`; }
-function getArt(issueSlug, page, panelId){ return localStorage.getItem(artKey(issueSlug,page,panelId)); }
-function setArt(issueSlug, page, panelId, dataUrl){
-  try { localStorage.setItem(artKey(issueSlug,page,panelId), dataUrl); }
-  catch(e){ alert("Browser storage is full. Export/download panels you want to keep, or clear old art."); }
+// ------------------------------------------------- markdown -> JSON parser -
+// Parses the same script format as Anonymous_Heroes_Full_Series_Script.md:
+//   ## ISSUE N: "Title"
+//   **Cover**  /  **Page N**  /  **Page N (HERO)**
+//   - **Panel N** — description
+//     - *Narration:* ...   *Dialogue (Speaker):* ...   *Thought (Speaker):* ...
+//     - *Text on screen:* ...   *Caption:* ...   *Image Prompt:* ...
+// Everything before the first "## ISSUE" heading (series bible etc.) is
+// ignored, so a whole script file can be pasted in as-is.
+function stripQuotes(s){
+  s = s.trim();
+  const m = s.match(/^"([\s\S]*)"$/);
+  return m ? m[1] : s;
+}
+function parseSpeaker(label){
+  const m = label.match(/\(([^)]+)\)/);
+  if(!m) return "";
+  return m[1].split(",")[0].trim();
+}
+function applyMdAttr(target, label, content, isTopLevel){
+  content = stripQuotes(content);
+  const lower = label.trim().toLowerCase();
+  if(lower === "image prompt"){ target.image_prompt = content; return; }
+  if(lower === "subtitle"){ target.subtitle = content; return; }
+  if(lower === "shot"){ target.shot = content; return; }
+  if(lower === "caption"){
+    if(isTopLevel){ target.caption = content; }
+    else { target.narration = target.narration ? target.narration+" "+content : content; }
+    return;
+  }
+  if(lower === "narration"){ target.narration = target.narration ? target.narration+" "+content : content; return; }
+  if(!target.dialogue) target.dialogue = [];
+  if(lower === "text on screen"){ target.dialogue.push({type:"screen", speaker:"Screen", line:content}); return; }
+  if(lower === "action"){ target.narration = target.narration ? target.narration+" ["+content+"]" : "["+content+"]"; return; }
+  if(lower.startsWith("dialogue")){ target.dialogue.push({type:"dialogue", speaker:parseSpeaker(label)||"?", line:content}); return; }
+  if(lower.startsWith("thought")){ target.dialogue.push({type:"thought", speaker:parseSpeaker(label)||"?", line:content}); return; }
+  // unknown label — ignore rather than fail the whole parse
+}
+function mdToStory(md){
+  const lines = String(md).replace(/\r\n/g,"\n").split("\n");
+  const issues = [];
+  let curIssue = null, curPage = null, curPanel = null, curCover = null;
+  for(const raw of lines){
+    const line = raw.replace(/\s+$/,"");
+    if(!line.trim()) continue;
+    let m;
+    if((m = line.match(/^##\s*ISSUE\s+(\d+)\s*:\s*"([^"]+)"/i))){
+      curIssue = { number: parseInt(m[1],10), slug: slugify(m[2]), title: m[2], cover: null, pages: [] };
+      issues.push(curIssue);
+      curPage = null; curPanel = null; curCover = null;
+      continue;
+    }
+    if(!curIssue) continue; // series bible / act headers before first issue
+    if(/^\*\*Cover\*\*/i.test(line.trim())){
+      curCover = { image_prompt: null, subtitle: null };
+      curIssue.cover = curCover;
+      curPage = null; curPanel = null;
+      continue;
+    }
+    if((m = line.trim().match(/^\*\*Page\s+(\d+)[^*]*\*\*/i))){
+      const isHero = /\(HERO\)/i.test(line);
+      curPage = { page: parseInt(m[1],10), panels: [] };
+      if(isHero){ curPage.hero = true; curPage.image_prompt = null; curPage.caption = null; }
+      curIssue.pages.push(curPage);
+      curPanel = null; curCover = null;
+      continue;
+    }
+    if((m = line.match(/^-\s*\*\*Panel\s+(\d+)\*\*\s*[-\u2013\u2014]\s*(.+)/))){
+      if(!curPage){ curPage = { page: curIssue.pages.length+1, panels: [] }; curIssue.pages.push(curPage); }
+      curPanel = { id: parseInt(m[1],10), shot:null, description: m[2].trim(), narration:null, dialogue:[], image_prompt:null };
+      curPage.panels.push(curPanel);
+      continue;
+    }
+    if((m = line.match(/^\s+-\s*\*([^:*]+):\*\s*(.+)/))){ // indented -> belongs to current panel
+      if(curPanel) applyMdAttr(curPanel, m[1], m[2], false);
+      continue;
+    }
+    if((m = line.match(/^-\s*\*([^:*]+):\*\s*(.+)/))){ // top-level -> cover or hero page
+      const target = curCover || (curPage && curPage.hero ? curPage : null);
+      if(target) applyMdAttr(target, m[1], m[2], true);
+      continue;
+    }
+  }
+  return { issues };
+}
+function convertMdToJson(){
+  try {
+    const result = mdToStory(document.getElementById("storyMD").value);
+    if(!result.issues.length) throw new Error('No \'## ISSUE N: "Title"\' headings found.');
+    document.getElementById("storyJSON").value = JSON.stringify(result, null, 2);
+    story = result;
+    saveStoryToStorage();
+    setStatus("mdStatus", `Parsed ${result.issues.length} issue(s). Applied — switch to Panels & Art tab.`, "ok");
+    renderPanelList();
+    setStoryFormat("json");
+  } catch(e){
+    setStatus("mdStatus", "Parse error: "+e.message, "err");
+  }
+}
+function loadMdExample(){
+  document.getElementById("storyMD").value =
+`## ISSUE 1: "Test Issue"
+
+**Cover**
+- *Image Prompt:* "Rain-soaked cyberpunk skyline at night, hooded silhouette in foreground, moody neon lighting."
+- *Subtitle:* "Every ghost has a beginning."
+
+**Page 1**
+- **Panel 1** — Wide establishing shot, rain-soaked cyberpunk city at night, neon signs reflected in wet streets, a monorail crossing overhead.
+  - *Narration:* "Before there was a team, there was one man convinced the world was already lost."
+  - *Image Prompt:* "Acubi aesthetic, wide establishing shot, futuristic city at night, rain, neon reflections, muted earth-tone palette with cyan accent lighting."
+- **Panel 2** — Hooded figure standing in a dark alley, glowing white eyes visible under the hood, streetlight overhead.
+  - *Dialogue (Anonymous):* "Too close. I need people who don't need me to be perfect."
+
+**Page 2**
+- **Panel 3** — Close on a hacker's hands typing across three monitors, green and cyan code cascading down the screens.
+  - *Text on screen:* "ACCESS GRANTED"
+
+**Page 3 (HERO)**
+- *Image Prompt:* "Full-bleed splash: a data packet arriving on a terminal screen, encrypted, signed with a glowing hat icon, dark room."
+- *Caption:* "He didn't know yet it would become a rope."
+`;
+  setStatus("mdStatus", "Example loaded. Click Convert to JSON.", "ok");
+}
+function importMD(){ document.getElementById("importMdFile").click(); }
+function handleImportMdFile(ev){
+  const file = ev.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { document.getElementById("storyMD").value = e.target.result; };
+  reader.readAsText(file);
 }
 
 // ------------------------------------------------------------- panels ----
+function renderCoverItem(issue){
+  const div = document.createElement("div");
+  div.className = "panel-item cover-item";
+  const key = artKey(issue.slug, "cover");
+  const existing = getArt(key);
+  div.dataset.hasArt = existing ? "1" : "0";
+  div.innerHTML = `
+    <strong>${issue.slug} — COVER</strong>
+    <label>Image prompt</label>
+    <textarea class="promptBox">${issue.cover.image_prompt || ""}</textarea>
+    <label>Subtitle</label>
+    <input class="coverSubtitle" value="${(issue.cover.subtitle||"").replace(/"/g,"&quot;")}">
+    <div class="row">
+      <button class="btn secondary genBtn" data-kind="cover" data-issue="${issue.slug}">Generate</button>
+      ${existing ? `<button class="btn secondary dlBtn" data-kind="cover" data-issue="${issue.slug}">Download</button>` : ""}
+    </div>
+    <div class="status genStatus">${existing ? "" : "No art yet — click Generate."}</div>
+    <img class="artThumb" src="${existing||""}">
+  `;
+  div.querySelector(".coverSubtitle").addEventListener("input", e=>{ issue.cover.subtitle = e.target.value; saveStoryToStorage(); });
+  div.querySelector(".promptBox").addEventListener("input", e=>{ issue.cover.image_prompt = e.target.value; saveStoryToStorage(); });
+  return div;
+}
+function renderHeroItem(issue, page){
+  const div = document.createElement("div");
+  div.className = "panel-item hero-item";
+  const key = artKey(issue.slug, "hero", page.page);
+  const existing = getArt(key);
+  div.dataset.hasArt = existing ? "1" : "0";
+  div.innerHTML = `
+    <strong>${issue.slug} — p${page.page} HERO SPLASH</strong>
+    <label>Image prompt</label>
+    <textarea class="promptBox">${page.image_prompt || ""}</textarea>
+    <label>Caption</label>
+    <textarea class="narrationBox">${page.caption || ""}</textarea>
+    <div class="row">
+      <button class="btn secondary genBtn" data-kind="hero" data-issue="${issue.slug}" data-page="${page.page}">Generate</button>
+      ${existing ? `<button class="btn secondary dlBtn" data-kind="hero" data-issue="${issue.slug}" data-page="${page.page}">Download</button>` : ""}
+    </div>
+    <div class="status genStatus">${existing ? "" : "No art yet — click Generate."}</div>
+    <img class="artThumb" src="${existing||""}">
+  `;
+  div.querySelector(".promptBox").addEventListener("input", e=>{ page.image_prompt = e.target.value; saveStoryToStorage(); });
+  div.querySelector(".narrationBox").addEventListener("input", e=>{ page.caption = e.target.value; saveStoryToStorage(); });
+  return div;
+}
+// ---------------------------------------------------- bubble placement ----
+// Drag a marker on the panel's art thumbnail to pin a bubble/narration box
+// to a spot instead of the default automatic alternating layout. Position is
+// stored as {x,y} percentages (0-100) of the panel, read by buildPanelsPage.
+function attachDragMarker(markerEl, canvasEl, setPos){
+  let dragging = false;
+  markerEl.addEventListener("pointerdown", (e)=>{
+    e.preventDefault();
+    dragging = true;
+    markerEl.setPointerCapture(e.pointerId);
+  });
+  markerEl.addEventListener("pointermove", (e)=>{
+    if(!dragging) return;
+    const rect = canvasEl.getBoundingClientRect();
+    let x = ((e.clientX - rect.left) / rect.width) * 100;
+    let y = ((e.clientY - rect.top) / rect.height) * 100;
+    x = Math.max(0, Math.min(100, x));
+    y = Math.max(0, Math.min(100, y));
+    markerEl.style.left = x.toFixed(1) + "%";
+    markerEl.style.top = y.toFixed(1) + "%";
+    markerEl.dataset.x = x;
+    markerEl.dataset.y = y;
+  });
+  function finish(e){
+    if(!dragging) return;
+    dragging = false;
+    const x = parseFloat(markerEl.dataset.x);
+    const y = parseFloat(markerEl.dataset.y);
+    if(!isNaN(x) && !isNaN(y)) setPos(x, y);
+  }
+  markerEl.addEventListener("pointerup", finish);
+  markerEl.addEventListener("pointercancel", finish);
+}
+function refreshPosEditor(canvasEl, panel){
+  if(!canvasEl) return;
+  canvasEl.querySelectorAll(".posMarker").forEach(m=>m.remove());
+  if(panel.narration){
+    const pos = panel.narrationPos || {x:20, y:12};
+    const m = document.createElement("div");
+    m.className = "posMarker narrationMarker";
+    m.textContent = "N";
+    m.style.left = pos.x + "%";
+    m.style.top = pos.y + "%";
+    attachDragMarker(m, canvasEl, (x,y)=>{ panel.narrationPos = {x,y}; saveStoryToStorage(); });
+    canvasEl.appendChild(m);
+  }
+  (panel.dialogue||[]).forEach((d, idx)=>{
+    const pos = d.pos || {x: idx % 2 === 0 ? 20 : 80, y: 30 + (idx % 3) * 25};
+    const m = document.createElement("div");
+    m.className = "posMarker";
+    m.textContent = (d.type==="thought" ? "T" : d.type==="screen" ? "S" : "D") + (idx+1);
+    m.style.left = pos.x + "%";
+    m.style.top = pos.y + "%";
+    attachDragMarker(m, canvasEl, (x,y)=>{ d.pos = {x,y}; saveStoryToStorage(); });
+    canvasEl.appendChild(m);
+  });
+}
+function renderDialogueRow(panel, d, posCanvas){
+  const row = document.createElement("div");
+  row.className = "dialogue-row";
+  row.innerHTML = `
+    <select class="dType">
+      <option value="dialogue" ${d.type==="dialogue"?"selected":""}>Speech</option>
+      <option value="thought" ${d.type==="thought"?"selected":""}>Thought</option>
+      <option value="screen" ${d.type==="screen"?"selected":""}>Screen text</option>
+    </select>
+    <input class="dSpeaker" placeholder="Speaker" value="${(d.speaker||"").replace(/"/g,"&quot;")}">
+    <textarea class="dLine" placeholder="Line">${d.line||""}</textarea>
+    <button class="btn danger removeDialogueBtn" type="button">✕</button>
+  `;
+  row.querySelector(".dType").addEventListener("change", e=>{
+    d.type = e.target.value;
+    saveStoryToStorage();
+    if(posCanvas) refreshPosEditor(posCanvas, panel);
+  });
+  row.querySelector(".dSpeaker").addEventListener("input", e=>{ d.speaker = e.target.value; saveStoryToStorage(); });
+  row.querySelector(".dLine").addEventListener("input", e=>{ d.line = e.target.value; saveStoryToStorage(); });
+  row.querySelector(".removeDialogueBtn").addEventListener("click", ()=>{
+    const i = panel.dialogue.indexOf(d);
+    if(i > -1) panel.dialogue.splice(i,1);
+    saveStoryToStorage();
+    row.remove();
+    if(posCanvas) refreshPosEditor(posCanvas, panel);
+  });
+  return row;
+}
+function renderPanelItem(issue, page, panel){
+  if(!panel.dialogue) panel.dialogue = [];
+  const div = document.createElement("div");
+  div.className = "panel-item";
+  const key = artKey(issue.slug, "panel", page.page, panel.id);
+  const existing = getArt(key);
+  div.dataset.hasArt = existing ? "1" : "0";
+  div.innerHTML = `
+    <strong>${issue.slug} — p${page.page} panel${panel.id}</strong>
+    ${panel.shot ? `<div class="page-label">${panel.shot}</div>` : ""}
+    <label>Description / prompt</label>
+    <textarea class="promptBox">${panel.image_prompt || panel.description || ""}</textarea>
+    <label>Narration</label>
+    <textarea class="narrationBox">${panel.narration || ""}</textarea>
+    <div class="dialogueList"></div>
+    <button class="btn secondary addDialogueBtn" type="button">+ Line (speech / thought / screen text)</button>
+    <label>Bubble &amp; narration placement <span class="muted">(drag markers — leave untouched for automatic layout)</span></label>
+    <div class="posCanvas" style="${existing ? `background-image:url(${existing});` : ""}"></div>
+    <div class="row">
+      <button class="btn secondary genBtn" data-kind="panel" data-issue="${issue.slug}" data-page="${page.page}" data-panel="${panel.id}">Generate</button>
+      ${existing ? `<button class="btn secondary dlBtn" data-kind="panel" data-issue="${issue.slug}" data-page="${page.page}" data-panel="${panel.id}">Download</button>` : ""}
+    </div>
+    <div class="status genStatus">${existing ? "" : "No art yet — click Generate."}</div>
+    <img class="artThumb" src="${existing||""}">
+  `;
+  const posCanvas = div.querySelector(".posCanvas");
+  div.querySelector(".narrationBox").addEventListener("input", e=>{
+    panel.narration = e.target.value;
+    saveStoryToStorage();
+    refreshPosEditor(posCanvas, panel);
+  });
+  const dList = div.querySelector(".dialogueList");
+  panel.dialogue.forEach(d => dList.appendChild(renderDialogueRow(panel, d, posCanvas)));
+  div.querySelector(".addDialogueBtn").addEventListener("click", ()=>{
+    const d = {type:"dialogue", speaker:"", line:""};
+    panel.dialogue.push(d);
+    saveStoryToStorage();
+    dList.appendChild(renderDialogueRow(panel, d, posCanvas));
+    refreshPosEditor(posCanvas, panel);
+  });
+  refreshPosEditor(posCanvas, panel);
+  return div;
+}
+let panelListTotalCount = 0;
+function updateMissingCount(){
+  const list = document.getElementById("panelList");
+  const missing = list.querySelectorAll('[data-has-art="0"]').length;
+  const missingNote = missing ? ` ${missing} still need art.` : " All have art.";
+  setStatus("panelsStatus", `${panelListTotalCount} panel(s)/page(s) loaded.${missingNote}`, "ok");
+}
+// Art keys the *current* story actually references. Anything in storage
+// under this key prefix that isn't in this set is "orphaned" — usually art
+// generated for a panel that was since deleted, renumbered, or re-imported
+// under a different id/slug. It still counts against IndexedDB usage.
+function expectedArtKeys(){
+  const keys = new Set();
+  if(!story || !story.issues) return keys;
+  story.issues.forEach(issue=>{
+    if(issue.cover) keys.add(artKey(issue.slug, "cover"));
+    (issue.pages||[]).forEach(page=>{
+      if(page.hero) keys.add(artKey(issue.slug, "hero", page.page));
+      else (page.panels||[]).forEach(panel => keys.add(artKey(issue.slug, "panel", page.page, panel.id)));
+    });
+  });
+  return keys;
+}
+function findOrphanedArtKeys(){
+  const expected = expectedArtKeys();
+  const orphaned = [];
+  artCache.forEach((val, key)=>{
+    if(key.startsWith(DB_NAME + "_art_") && !expected.has(key)) orphaned.push(key);
+  });
+  return orphaned;
+}
+async function cleanupOrphanedArt(){
+  const orphaned = findOrphanedArtKeys();
+  for(const k of orphaned){
+    artCache.delete(k);
+    try { await idbDelete(k); } catch(e){ console.error("Failed to delete orphaned art", k, e); }
+  }
+  refreshOrphanStatus();
+  return orphaned.length;
+}
+function refreshOrphanStatus(){
+  const el = document.getElementById("orphanStatus");
+  if(!story){ el.style.display = "none"; return; }
+  const orphaned = findOrphanedArtKeys();
+  if(!orphaned.length){ el.style.display = "none"; return; }
+  el.style.display = "";
+  el.innerHTML = `${orphaned.length} orphaned art item(s) in storage (not used by the loaded story). `
+    + `<button class="btn secondary" style="margin:0 0 0 6px; padding:4px 10px;" onclick="cleanupOrphanedArt()">Clean up</button>`;
+}
 function renderPanelList(){
   const list = document.getElementById("panelList");
   list.innerHTML = "";
@@ -417,50 +1007,66 @@ function renderPanelList(){
   }
   let count = 0;
   story.issues.forEach(issue=>{
+    const h = document.createElement("div");
+    h.className = "issue-heading";
+    h.textContent = `Issue ${issue.number}: ${issue.title || issue.slug}`;
+    list.appendChild(h);
+    if(issue.cover){ count++; list.appendChild(renderCoverItem(issue)); }
     issue.pages.forEach(page=>{
-      page.panels.forEach(panel=>{
+      const lbl = document.createElement("div");
+      lbl.className = "page-label";
+      lbl.textContent = `Page ${page.page}` + (page.hero ? " (hero splash)" : "");
+      list.appendChild(lbl);
+      if(page.hero){
         count++;
-        const div = document.createElement("div");
-        div.className = "panel-item";
-        const existing = getArt(issue.slug, page.page, panel.id);
-        div.innerHTML = `
-          <strong>${issue.slug} — p${page.page} panel${panel.id}</strong>
-          <textarea data-issue="${issue.slug}" data-page="${page.page}" data-panel="${panel.id}"
-                    class="promptBox">${panel.image_prompt || panel.description}</textarea>
-          <div class="row">
-            <button class="btn secondary genBtn" data-issue="${issue.slug}" data-page="${page.page}" data-panel="${panel.id}">Generate</button>
-            ${existing ? `<button class="btn secondary dlBtn" data-issue="${issue.slug}" data-page="${page.page}" data-panel="${panel.id}">Download</button>` : ""}
-          </div>
-          <div class="status genStatus"></div>
-          ${existing ? `<img src="${existing}">` : ""}
-        `;
-        list.appendChild(div);
-      });
+        list.appendChild(renderHeroItem(issue, page));
+      } else {
+        (page.panels||[]).forEach(panel=>{ count++; list.appendChild(renderPanelItem(issue, page, panel)); });
+      }
     });
   });
-  setStatus("panelsStatus", `${count} panels loaded.`, "ok");
+  panelListTotalCount = count;
+  updateMissingCount();
+  refreshOrphanStatus();
   list.querySelectorAll(".genBtn").forEach(b=>b.addEventListener("click", onGenerateClick));
   list.querySelectorAll(".dlBtn").forEach(b=>b.addEventListener("click", onDownloadClick));
 }
 
 async function onGenerateClick(ev){
-  const btn = ev.target;
-  const {issue, page, panel} = btn.dataset;
+  const btn = ev.currentTarget || ev.target;
+  const {kind, issue, page, panel} = btn.dataset;
   const item = btn.closest(".panel-item");
   const promptBox = item.querySelector(".promptBox");
   const statusEl = item.querySelector(".genStatus");
   const backend = document.getElementById("panelBackend").value;
   const styleLock = document.getElementById("styleLock").value;
   const fullPrompt = `${promptBox.value} ${styleLock}`;
+  const key = artKey(issue, kind, page, panel);
+  const aspect = (kind === "cover" || kind === "hero") ? "portrait" : "square";
   btn.disabled = true;
   statusEl.textContent = "Generating via " + backend + "...";
   statusEl.className = "status genStatus";
   try {
-    const dataUrl = await BACKENDS[backend](fullPrompt);
-    setArt(issue, page, panel, dataUrl);
-    let img = item.querySelector("img");
-    if(!img){ img = document.createElement("img"); item.appendChild(img); }
+    const dataUrl = await BACKENDS[backend](fullPrompt, aspect);
+    setArt(key, dataUrl);
+    item.dataset.hasArt = "1";
+    updateMissingCount();
+    let img = item.querySelector(".artThumb");
+    if(!img){ img = document.createElement("img"); img.className = "artThumb"; item.appendChild(img); }
     img.src = dataUrl;
+    if(kind === "panel"){
+      const posCanvas = item.querySelector(".posCanvas");
+      if(posCanvas) posCanvas.style.backgroundImage = `url(${dataUrl})`;
+    }
+    if(!item.querySelector(".dlBtn")){
+      const dl = document.createElement("button");
+      dl.className = "btn secondary dlBtn"; dl.textContent = "Download";
+      dl.dataset.kind = kind; dl.dataset.issue = issue;
+      if(page) dl.dataset.page = page;
+      if(panel) dl.dataset.panel = panel;
+      dl.addEventListener("click", onDownloadClick);
+      item.querySelector(".row").appendChild(dl);
+    }
     statusEl.textContent = "Done.";
     statusEl.className = "status genStatus ok";
   } catch(e){
@@ -470,19 +1076,24 @@ async function onGenerateClick(ev){
   btn.disabled = false;
 }
 function onDownloadClick(ev){
-  const {issue, page, panel} = ev.target.dataset;
-  const dataUrl = getArt(issue, page, panel);
+  const {kind, issue, page, panel} = ev.currentTarget.dataset;
+  const dataUrl = getArt(artKey(issue, kind, page, panel));
+  if(!dataUrl) return;
+  const suffix = kind === "cover" ? "cover"
+    : kind === "hero" ? `p${String(page).padStart(2,"0")}_hero`
+    : `p${String(page).padStart(2,"0")}_panel${String(panel).padStart(2,"0")}`;
   const a = document.createElement("a");
   a.href = dataUrl;
-  a.download = `${issue}_p${String(page).padStart(2,"0")}_panel${String(panel).padStart(2,"0")}.png`;
+  a.download = `${issue}_${suffix}.png`;
   a.click();
 }
 async function generateAll(){
   const btns = Array.from(document.querySelectorAll(".genBtn"));
   for(const btn of btns){
     const item = btn.closest(".panel-item");
-    if(item.querySelector("img")) continue; // skip ones already done
-    await onGenerateClick({target:btn});
+    const img = item.querySelector(".artThumb");
+    if(img && img.getAttribute("src")) continue; // skip ones already done
+    await onGenerateClick({currentTarget: btn});
   }
 }
 
@@ -498,11 +1109,15 @@ async function blobToDataURL(blob){
   });
 }
 
+// aspect: "square" (panels, default) or "portrait" (covers / hero splashes,
+// which render into a 3:4 full-bleed page — requesting the right ratio up
+// front avoids the object-fit:cover crop/stretch that square art gets there).
 const BACKENDS = {
-  pollinations: async (prompt) => {
+  pollinations: async (prompt, aspect) => {
     const keys = loadKeys();
     const seed = Math.floor(Math.random()*1e9);
-    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${seed}&nologo=true&model=flux`;
+    const [w,h] = aspect === "portrait" ? [1024,1365] : [1024,1024];
+    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=${w}&height=${h}&seed=${seed}&nologo=true&model=flux`;
     const headers = {};
     if(keys.pollinations) headers["Authorization"] = "Bearer " + keys.pollinations;
     const resp = await fetch(url, {headers});
@@ -511,45 +1126,52 @@ const BACKENDS = {
     return blobToDataURL(blob);
   },
 
-  huggingface: async (prompt) => {
+  huggingface: async (prompt, aspect) => {
     const keys = loadKeys();
     if(!keys.huggingface) throw new Error("No Hugging Face token set in Settings.");
+    const body = { inputs: prompt };
+    if(aspect === "portrait") body.parameters = { width: 1024, height: 1365 };
     const resp = await fetch("https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell", {
       method: "POST",
       headers: {
         "Authorization": "Bearer " + keys.huggingface,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ inputs: prompt })
+      body: JSON.stringify(body)
     });
     if(!resp.ok) throw new Error("Hugging Face HTTP " + resp.status + " — model may be loading, try again in ~20s.");
     const blob = await resp.blob();
     return blobToDataURL(blob);
   },
 
-  openai: async (prompt) => {
+  openai: async (prompt, aspect) => {
     const keys = loadKeys();
     if(!keys.openai) throw new Error("No OpenAI key set in Settings.");
+    const size = aspect === "portrait" ? "1024x1536" : "1024x1024";
     const resp = await fetch("https://api.openai.com/v1/images/generations", {
       method: "POST",
       headers: {
         "Authorization": "Bearer " + keys.openai,
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ model: "gpt-image-1", prompt, size: "1024x1024" })
+      body: JSON.stringify({ model: "gpt-image-1", prompt, size })
     });
     if(!resp.ok) throw new Error("OpenAI HTTP " + resp.status);
     const json = await resp.json();
     return "data:image/png;base64," + json.data[0].b64_json;
   },
 
-  google: async (prompt) => {
+  google: async (prompt, aspect) => {
     const keys = loadKeys();
     if(!keys.google) throw new Error("No Google key set in Settings.");
+    const aspectRatio = aspect === "portrait" ? "3:4" : "1:1";
     const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${keys.google}`, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { imageConfig: { aspectRatio } }
+      })
     });
     if(!resp.ok) throw new Error("Google HTTP " + resp.status + " — check billing is enabled on this key's project.");
     const json = await resp.json();
@@ -560,31 +1182,114 @@ const BACKENDS = {
 };
 
 // -------------------------------------------------------------- export ---
+function buildCoverPage(issue){
+  const art = getArt(artKey(issue.slug, "cover"));
+  const wrap = document.createElement("div");
+  wrap.className = "export-page";
+  wrap.innerHTML = `
+    <div class="export-cover">
+      ${art ? `<img src="${art}">` : ""}
+      <div class="scrim"></div>
+      <div class="titleBlock">
+        <h2>${issue.title || issue.slug}</h2>
+        <p>${issue.cover.subtitle || ""}</p>
+      </div>
+    </div>`;
+  return wrap;
+}
+function buildHeroPage(issue, page){
+  const art = getArt(artKey(issue.slug, "hero", page.page));
+  const wrap = document.createElement("div");
+  wrap.className = "export-page";
+  wrap.innerHTML = `
+    <div class="export-hero">
+      ${art ? `<img src="${art}">` : ""}
+      <div class="scrim"></div>
+      <div class="titleBlock">
+        <h3>Page ${page.page}</h3>
+        <p>${page.caption || ""}</p>
+      </div>
+    </div>`;
+  return wrap;
+}
+function gridTemplateForCount(n){
+  if(n <= 1) return "grid-template-columns:1fr; grid-template-rows:1fr;";
+  if(n === 2) return "grid-template-columns:1fr; grid-template-rows:1fr 1fr;";
+  if(n === 3) return "grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr;";
+  return "grid-template-columns:1fr 1fr; grid-template-rows:repeat(" + Math.ceil(n/2) + ",1fr);";
+}
+function buildPanelsPage(issue, page){
+  const wrap = document.createElement("div");
+  wrap.className = "export-page";
+  const grid = document.createElement("div");
+  grid.className = "export-panels-page";
+  grid.style.cssText = "display:grid; gap:8px; width:100%; height:100%; padding:12px; " + gridTemplateForCount(page.panels.length);
+  const n = page.panels.length;
+  page.panels.forEach((panel, idx)=>{
+    const art = getArt(artKey(issue.slug, "panel", page.page, panel.id));
+    const pw = document.createElement("div");
+    pw.className = "export-panel-wrap";
+    // Asymmetric layouts: a lone odd panel gets a full-width cell rather than
+    // sitting half-empty next to nothing. n===3 keeps its original lead-panel
+    // treatment (first panel wide); n>=5 odd counts put the wide panel last
+    // instead, since gridTemplateForCount() already sizes rows to fit.
+    if(n === 3 && idx === 0) pw.style.gridColumn = "1 / span 2";
+    if(n >= 5 && n % 2 === 1 && idx === n - 1) pw.style.gridColumn = "1 / span 2";
+    pw.innerHTML = art ? `<img src="${art}">` : `<div class="placeholder">No art yet</div>`;
+    if(panel.narration){
+      const nb = document.createElement("div");
+      nb.className = "narration-box";
+      nb.textContent = panel.narration;
+      if(panel.narrationPos){
+        nb.style.left = panel.narrationPos.x + "%";
+        nb.style.top = panel.narrationPos.y + "%";
+        nb.style.transform = "translate(-50%,-50%)";
+      }
+      pw.appendChild(nb);
+    }
+    (panel.dialogue||[]).forEach((d, di)=>{
+      const b = document.createElement("div");
+      const placed = !!d.pos;
+      // Tail direction: for an auto-laid-out bubble it alternates by index;
+      // for a dragged one, point toward whichever half of the panel it's in
+      // so the tail still reads as "coming from" a rough source direction.
+      const side = placed ? (d.pos.x < 50 ? "left" : "right") : (di % 2 === 0 ? "left" : "right");
+      b.className = "bubble " + (d.type==="thought" ? "thought " : d.type==="screen" ? "screen " : "") + side;
+      if(placed){
+        b.style.left = d.pos.x + "%";
+        b.style.top = d.pos.y + "%";
+        b.style.transform = "translate(-50%,-50%)";
+      } else {
+        b.style.bottom = (10 + di*46) + "px";
+        b.style[side] = "10px";
+      }
+      b.innerHTML = (d.speaker ? `<span class="spk">${d.speaker}</span>` : "") + (d.line || "");
+      pw.appendChild(b);
+    });
+    grid.appendChild(pw);
+  });
+  wrap.appendChild(grid);
+  return wrap;
+}
 function buildExport(){
   const el = document.getElementById("exportPreview");
   el.innerHTML = "";
-  if(!story) { el.textContent = "No story loaded."; return; }
+  if(!story || !story.issues){ el.textContent = "No story loaded."; return; }
   story.issues.forEach(issue=>{
-    const h = document.createElement("h2");
-    h.textContent = `Issue ${issue.number}: ${issue.title || issue.slug}`;
-    el.appendChild(h);
+    if(issue.cover) el.appendChild(buildCoverPage(issue));
     issue.pages.forEach(page=>{
-      page.panels.forEach(panel=>{
-        const art = getArt(issue.slug, page.page, panel.id);
-        if(art){
-          const img = document.createElement("img");
-          img.src = art;
-          el.appendChild(img);
-        }
-      });
+      el.appendChild(page.hero ? buildHeroPage(issue, page) : buildPanelsPage(issue, page));
     });
   });
 }
 
 // --------------------------------------------------------------- init ----
-loadKeys();
-loadSettings();
-loadStoryFromStorage();
+(async function init(){
+  loadKeys();
+  loadSettings();
+  await initArtStorage();
+  loadStoryFromStorage();
+})();
 
 if("serviceWorker" in navigator){
   window.addEventListener("load", ()=>{
