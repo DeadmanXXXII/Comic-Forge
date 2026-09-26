@@ -5,75 +5,115 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Comic Forge</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#20201d">
+<meta name="theme-color" content="#0a0a0c">
 <link rel="icon" href="icons/favicon.png">
 <style>
   :root {
-    --bg: #e7e0d3; --ink: #20201d; --shadow: #5a5548;
-    --cyan: #3ad6c9; --magenta: #c9427a; --amber: #d69a3a;
-    --panel-bg: #ffffff;
+    --bg: #08070a; --ink: #ece5d8; --shadow: #2a2725;
+    --cyan: #e2222c; --magenta: #7a0f14; --amber: #d99a3c;
+    --panel-bg: #101010; --panel-border: #262220;
+    --bar-ink: #ece5d8;
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) { --bg:#1b1a17; --ink:#e7e0d3; --panel-bg:#2a2823; --shadow:#8a8578; }
-  }
-  :root[data-theme="dark"] { --bg:#1b1a17; --ink:#e7e0d3; --panel-bg:#2a2823; --shadow:#8a8578; }
+  :root[data-theme="light"] { --bg:#e9e3d4; --ink:#151210; --panel-bg:#fffdf9; --panel-border:#d7cfba; --shadow:#a89f8c; }
   * { box-sizing: border-box; }
   html, body { height:100%; margin:0; }
   body {
     font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg); color: var(--ink);
+    background:
+      linear-gradient(rgba(226,34,44,0.05) 1px, transparent 1px) 0 0/100% 28px,
+      linear-gradient(90deg, rgba(226,34,44,0.05) 1px, transparent 1px) 0 0/28px 100%,
+      var(--bg);
+    color: var(--ink);
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
+  .mono { font-family: "SF Mono", "Consolas", "Courier New", monospace; }
+  /* hazard-strip: comic-cover style top/bottom border */
+  header::before, footer::before {
+    content:""; display:block; height:6px; margin: calc(-1 * (env(safe-area-inset-top,0px) + 14px)) -16px 12px;
+    background: repeating-linear-gradient(-45deg, #0a0a0a 0 10px, var(--cyan) 10px 20px);
+  }
+  footer::before { margin: -24px -24px 18px; }
   header {
     position: sticky; top:0; z-index:5;
     padding: calc(env(safe-area-inset-top,0px) + 14px) 16px 12px;
-    background: var(--ink); color: var(--bg);
+    background: #0a0908;
+    border-bottom: 3px solid var(--cyan);
+    box-shadow: 0 2px 20px -4px rgba(226,34,44,0.35);
     display:flex; align-items:center; justify-content:space-between;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 18px 100%, 0 calc(100% - 18px));
   }
-  header h1 { font-size:1.1rem; margin:0; letter-spacing:0.02em; }
-  nav { display:flex; gap:4px; overflow-x:auto; padding:8px 12px; background:var(--ink); }
+  header h1 {
+    font-family: "SF Mono", "Consolas", "Courier New", monospace;
+    font-size:1.05rem; margin:0; letter-spacing:0.08em; font-weight:700;
+    color: var(--bar-ink); text-shadow: 0 0 10px rgba(226,34,44,0.55);
+  }
+  header .btn.secondary { color: var(--bar-ink); border-color: var(--shadow); }
+  nav { display:flex; gap:6px; overflow-x:auto; padding:10px 12px; background:#08070a; border-bottom:1px solid var(--panel-border); }
   nav button {
-    background:transparent; border:1px solid var(--shadow); color: var(--bg);
-    padding:8px 14px; border-radius:20px; font-size:0.85rem; cursor:pointer; white-space:nowrap;
+    font-family: "SF Mono", "Consolas", "Courier New", monospace;
+    background:transparent; border:1px solid var(--shadow); color: var(--bar-ink);
+    padding:8px 14px; border-radius:2px; font-size:0.8rem; cursor:pointer; white-space:nowrap;
+    text-transform: uppercase; letter-spacing:0.05em;
   }
-  nav button.active { background: var(--cyan); color:#08211f; border-color: var(--cyan); font-weight:600; }
+  nav button.active {
+    background: var(--cyan); color:#160404; border-color: var(--cyan); font-weight:700;
+    box-shadow: 0 0 12px rgba(226,34,44,0.5);
+  }
   main { max-width: 900px; margin: 0 auto; padding: 16px; }
   section { display:none; }
   section.active { display:block; }
-  .card { background: var(--panel-bg); border:1px solid var(--shadow); border-radius:10px; padding:14px; margin-bottom:12px; }
-  label { display:block; font-size:0.8rem; opacity:0.75; margin-bottom:4px; margin-top:10px; }
-  input, select, textarea {
-    width:100%; padding:9px 10px; border-radius:6px; border:1px solid var(--shadow);
-    background: var(--bg); color: var(--ink); font-size:0.95rem; font-family:inherit;
+  .card {
+    background: var(--panel-bg); border:1px solid var(--panel-border); border-radius:0;
+    padding:14px; margin-bottom:12px; border-left: 3px solid var(--cyan);
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.4);
   }
+  label { display:block; font-size:0.78rem; opacity:0.7; margin-bottom:4px; margin-top:10px; text-transform:uppercase; letter-spacing:0.04em; }
+  input, select, textarea {
+    width:100%; padding:9px 10px; border-radius:2px; border:1px solid var(--panel-border);
+    background: #050607; color: var(--ink); font-size:0.95rem; font-family:inherit;
+  }
+  input:focus, select:focus, textarea:focus { outline:none; border-color: var(--cyan); box-shadow: 0 0 0 2px rgba(226,34,44,0.25); }
   textarea { resize:vertical; min-height:60px; }
   button.btn {
-    background: var(--cyan); color:#08211f; border:none; border-radius:6px;
-    padding:9px 16px; font-weight:600; cursor:pointer; font-size:0.9rem; margin-top:10px;
+    background: var(--cyan);
+    color:#160404; border:none; border-radius:2px;
+    padding:9px 16px; font-weight:700; cursor:pointer; font-size:0.85rem; margin-top:10px;
+    text-transform: uppercase; letter-spacing:0.04em;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
   }
   button.btn.secondary { background:transparent; border:1px solid var(--shadow); color:var(--ink); }
-  button.btn.danger { background: var(--magenta); color:#fff; }
+  button.btn.danger { background: var(--magenta); color:#f2e9e0; }
+  button.btn.gold { background: var(--amber); color:#1a0e00; }
   button.btn:disabled { opacity:0.5; cursor:not-allowed; }
   .row { display:flex; gap:10px; flex-wrap:wrap; }
   .row > * { flex:1; min-width:140px; }
-  .panel-item { border:1px solid var(--shadow); border-radius:8px; padding:10px; margin-bottom:10px; }
-  .panel-item img { max-width:100%; border-radius:6px; display:block; margin-top:8px; }
+  .panel-item { border:1px solid var(--panel-border); border-radius:4px; padding:10px; margin-bottom:10px; background:#0c0a08; border-left: 2px solid var(--amber); }
+  .panel-item img { max-width:100%; border-radius:2px; display:block; margin-top:8px; border:1px solid var(--panel-border); }
   .status { font-size:0.8rem; opacity:0.7; margin-top:6px; }
-  .status.err { color: var(--magenta); opacity:1; }
+  .status.err { color: #e2555c; opacity:1; }
   .status.ok { color: var(--cyan); opacity:1; }
   .muted { opacity:0.65; font-size:0.85rem; }
   .key-row { display:flex; gap:8px; align-items:center; }
   .key-row input { flex:1; }
-  #exportPreview { background:#fff; color:#111; padding:20px; }
+  #exportPreview { background:#fff; color:#111; padding:20px; border-radius:4px; }
   #exportPreview img { max-width:100%; margin-bottom:16px; border-radius:4px; }
-  footer { text-align:center; padding:24px; opacity:0.5; font-size:0.75rem; }
+  footer { text-align:center; padding:24px; opacity:0.45; font-size:0.72rem; font-family: "SF Mono", "Consolas", monospace; }
+  .logo-img { height:34px; border-radius:2px; display:block; filter: drop-shadow(0 0 6px rgba(226,34,44,0.45)); }
+  .example-note {
+    border-left: 3px solid var(--amber); padding:8px 12px; background:#120c00;
+    font-size:0.82rem; opacity:0.9; border-radius:0 4px 4px 0; margin-top:10px;
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>📖 Comic Forge</h1>
+  <div style="display:flex; align-items:center; gap:10px;">
+    <img src="icons/icon-44.png" alt="" class="logo-img">
+    <h1>COMIC_FORGE</h1>
+  </div>
   <button class="btn secondary" style="margin:0;padding:6px 12px" onclick="toggleTheme()">◐</button>
 </header>
 
@@ -141,10 +181,14 @@
       <p class="muted">Paste or edit your comic as JSON: an array of issues, each with pages, each with panels.
       Import the shape your build pipeline already uses, or start from the template.</p>
       <div class="row">
-        <button class="btn secondary" onclick="loadTemplate()">Load template</button>
+        <button class="btn secondary" onclick="loadTemplate()">Load blank template</button>
+        <button class="btn gold" onclick="loadExample()">Load example (2 real panels)</button>
         <button class="btn secondary" onclick="importJSON()">Import from file</button>
         <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImportFile(event)">
       </div>
+      <div class="example-note">The example is the exact JSON structure behind the rain-soaked street and
+      hooded-figure panels shown in the app's own screenshots — good reference for how specific a panel
+      description needs to be to come out on-theme.</div>
       <label>Story JSON</label>
       <textarea id="storyJSON" style="min-height:300px; font-family:monospace; font-size:0.8rem;"></textarea>
       <div class="row">
@@ -281,6 +325,45 @@ function loadTemplate(){
     ]
   };
   document.getElementById("storyJSON").value = JSON.stringify(tmpl, null, 2);
+}
+function loadExample(){
+  const example = {
+    issues: [
+      {
+        number: 1,
+        slug: "test-issue",
+        title: "Test Issue",
+        pages: [
+          {
+            page: 1,
+            panels: [
+              {
+                id: 1,
+                description: "Wide establishing shot, rain-soaked cyberpunk city at night, neon signs reflected in wet streets, a monorail crossing overhead.",
+                image_prompt: null
+              },
+              {
+                id: 2,
+                description: "Hooded figure standing in a dark alley, glowing white eyes visible under the hood, streetlight overhead.",
+                image_prompt: null
+              }
+            ]
+          },
+          {
+            page: 2,
+            panels: [
+              {
+                id: 3,
+                description: "Close on a hacker's hands typing across three monitors, green and cyan code cascading down the screens.",
+                image_prompt: null
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  };
+  document.getElementById("storyJSON").value = JSON.stringify(example, null, 2);
 }
 function importJSON(){ document.getElementById("importFile").click(); }
 function handleImportFile(ev){
