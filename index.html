@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Comic Forge</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#20201d">
+<link rel="icon" href="icons/favicon.png">
+<style>
+  :root {
+    --bg: #e7e0d3; --ink: #20201d; --shadow: #5a5548;
+    --cyan: #3ad6c9; --magenta: #c9427a; --amber: #d69a3a;
+    --panel-bg: #ffffff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg:#1b1a17; --ink:#e7e0d3; --panel-bg:#2a2823; --shadow:#8a8578; }
+  }
+  :root[data-theme="dark"] { --bg:#1b1a17; --ink:#e7e0d3; --panel-bg:#2a2823; --shadow:#8a8578; }
+  * { box-sizing: border-box; }
+  html, body { height:100%; margin:0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--ink);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  header {
+    position: sticky; top:0; z-index:5;
+    padding: calc(env(safe-area-inset-top,0px) + 14px) 16px 12px;
+    background: var(--ink); color: var(--bg);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  header h1 { font-size:1.1rem; margin:0; letter-spacing:0.02em; }
+  nav { display:flex; gap:4px; overflow-x:auto; padding:8px 12px; background:var(--ink); }
+  nav button {
+    background:transparent; border:1px solid var(--shadow); color: var(--bg);
+    padding:8px 14px; border-radius:20px; font-size:0.85rem; cursor:pointer; white-space:nowrap;
+  }
+  nav button.active { background: var(--cyan); color:#08211f; border-color: var(--cyan); font-weight:600; }
+  main { max-width: 900px; margin: 0 auto; padding: 16px; }
+  section { display:none; }
+  section.active { display:block; }
+  .card { background: var(--panel-bg); border:1px solid var(--shadow); border-radius:10px; padding:14px; margin-bottom:12px; }
+  label { display:block; font-size:0.8rem; opacity:0.75; margin-bottom:4px; margin-top:10px; }
+  input, select, textarea {
+    width:100%; padding:9px 10px; border-radius:6px; border:1px solid var(--shadow);
+    background: var(--bg); color: var(--ink); font-size:0.95rem; font-family:inherit;
+  }
+  textarea { resize:vertical; min-height:60px; }
+  button.btn {
+    background: var(--cyan); color:#08211f; border:none; border-radius:6px;
+    padding:9px 16px; font-weight:600; cursor:pointer; font-size:0.9rem; margin-top:10px;
+  }
+  button.btn.secondary { background:transparent; border:1px solid var(--shadow); color:var(--ink); }
+  button.btn.danger { background: var(--magenta); color:#fff; }
+  button.btn:disabled { opacity:0.5; cursor:not-allowed; }
+  .row { display:flex; gap:10px; flex-wrap:wrap; }
+  .row > * { flex:1; min-width:140px; }
+  .panel-item { border:1px solid var(--shadow); border-radius:8px; padding:10px; margin-bottom:10px; }
+  .panel-item img { max-width:100%; border-radius:6px; display:block; margin-top:8px; }
+  .status { font-size:0.8rem; opacity:0.7; margin-top:6px; }
+  .status.err { color: var(--magenta); opacity:1; }
+  .status.ok { color: var(--cyan); opacity:1; }
+  .muted { opacity:0.65; font-size:0.85rem; }
+  .key-row { display:flex; gap:8px; align-items:center; }
+  .key-row input { flex:1; }
+  #exportPreview { background:#fff; color:#111; padding:20px; }
+  #exportPreview img { max-width:100%; margin-bottom:16px; border-radius:4px; }
+  footer { text-align:center; padding:24px; opacity:0.5; font-size:0.75rem; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📖 Comic Forge</h1>
+  <button class="btn secondary" style="margin:0;padding:6px 12px" onclick="toggleTheme()">◐</button>
+</header>
+
+<nav>
+  <button data-tab="settings" class="active">Settings</button>
+  <button data-tab="story">Story Data</button>
+  <button data-tab="panels">Panels &amp; Art</button>
+  <button data-tab="export">Export</button>
+</nav>
+
+<main>
+
+  <!-- SETTINGS -->
+  <section id="tab-settings" class="active">
+    <div class="card">
+      <p class="muted">Your API keys are stored only in this browser (localStorage) and sent directly from your
+      browser to the provider you choose. They are never sent anywhere else, including to us.</p>
+
+      <label>OpenAI API key (gpt-image-1 — paid)</label>
+      <div class="key-row">
+        <input type="password" id="key-openai" placeholder="sk-...">
+        <button class="btn secondary" style="margin:0" onclick="toggleShow('key-openai')">👁</button>
+      </div>
+
+      <label>Google Gemini API key (image gen — requires billing enabled)</label>
+      <div class="key-row">
+        <input type="password" id="key-google" placeholder="AIza...">
+        <button class="btn secondary" style="margin:0" onclick="toggleShow('key-google')">👁</button>
+      </div>
+
+      <label>Hugging Face API token (free tier available — huggingface.co/settings/tokens)</label>
+      <div class="key-row">
+        <input type="password" id="key-hf" placeholder="hf_...">
+        <button class="btn secondary" style="margin:0" onclick="toggleShow('key-hf')">👁</button>
+      </div>
+
+      <label>Pollinations API key (optional — free anonymous tier works without one)</label>
+      <div class="key-row">
+        <input type="password" id="key-pollinations" placeholder="optional">
+        <button class="btn secondary" style="margin:0" onclick="toggleShow('key-pollinations')">👁</button>
+      </div>
+
+      <button class="btn" onclick="saveKeys()">Save keys</button>
+      <button class="btn danger" onclick="clearKeys()">Clear all keys</button>
+      <div id="keyStatus" class="status"></div>
+    </div>
+
+    <div class="card">
+      <label>Default art backend</label>
+      <select id="defaultBackend">
+        <option value="pollinations">Pollinations (free)</option>
+        <option value="huggingface">Hugging Face (free tier)</option>
+        <option value="openai">OpenAI (paid)</option>
+        <option value="google">Google Gemini (paid, billing required)</option>
+      </select>
+      <label>Style lock (appended to every prompt)</label>
+      <textarea id="styleLock">Gritty cyberpunk noir comic panel, printed-poster texture with visible grain, muted earth-tone base palette. Cinematic framing, no text, no speech bubbles, no watermark, no logos.</textarea>
+      <button class="btn" onclick="saveSettings()">Save settings</button>
+    </div>
+  </section>
+
+  <!-- STORY DATA -->
+  <section id="tab-story">
+    <div class="card">
+      <p class="muted">Paste or edit your comic as JSON: an array of issues, each with pages, each with panels.
+      Import the shape your build pipeline already uses, or start from the template.</p>
+      <div class="row">
+        <button class="btn secondary" onclick="loadTemplate()">Load template</button>
+        <button class="btn secondary" onclick="importJSON()">Import from file</button>
+        <input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImportFile(event)">
+      </div>
+      <label>Story JSON</label>
+      <textarea id="storyJSON" style="min-height:300px; font-family:monospace; font-size:0.8rem;"></textarea>
+      <div class="row">
+        <button class="btn" onclick="parseStory()">Apply to Panels tab</button>
+        <button class="btn secondary" onclick="downloadStory()">Download JSON</button>
+      </div>
+      <div id="storyStatus" class="status"></div>
+    </div>
+  </section>
+
+  <!-- PANELS -->
+  <section id="tab-panels">
+    <div class="card">
+      <div class="row">
+        <select id="panelBackend">
+          <option value="pollinations">Pollinations (free)</option>
+          <option value="huggingface">Hugging Face</option>
+          <option value="openai">OpenAI</option>
+          <option value="google">Google Gemini</option>
+        </select>
+        <button class="btn" onclick="generateAll()">Generate all missing</button>
+      </div>
+      <div class="status" id="panelsStatus">No story loaded — go to Story Data tab first.</div>
+    </div>
+    <div id="panelList"></div>
+  </section>
+
+  <!-- EXPORT -->
+  <section id="tab-export">
+    <div class="card">
+      <p class="muted">Builds a printable page from whatever panels currently have art, then opens your browser's
+      print dialog — choose "Save as PDF" there for a PDF file.</p>
+      <button class="btn" onclick="buildExport()">Build preview</button>
+      <button class="btn secondary" onclick="window.print()">Print / Save as PDF</button>
+    </div>
+    <div id="exportPreview"></div>
+  </section>
+
+</main>
+
+<footer>Comic Forge — runs entirely in your browser. No data leaves your device except direct calls to the AI
+provider you configure, using your own key.</footer>
+
+<script>
+// ---------------------------------------------------------------- state ---
+let story = null; // { issues: [...] }
+const DB_NAME = "comicforge";
+
+function toggleTheme(){
+  const r = document.documentElement;
+  const cur = r.getAttribute("data-theme");
+  r.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+}
+function toggleShow(id){
+  const el = document.getElementById(id);
+  el.type = el.type === "password" ? "text" : "password";
+}
+
+// ------------------------------------------------------------ tab nav -----
+document.querySelectorAll("nav button").forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    document.querySelectorAll("nav button").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll("main section").forEach(s=>s.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
+  });
+});
+
+// -------------------------------------------------------------- storage ---
+function saveKeys(){
+  const keys = {
+    openai: document.getElementById("key-openai").value,
+    google: document.getElementById("key-google").value,
+    huggingface: document.getElementById("key-hf").value,
+    pollinations: document.getElementById("key-pollinations").value,
+  };
+  try {
+    localStorage.setItem(DB_NAME+"_keys", JSON.stringify(keys));
+    setStatus("keyStatus", "Keys saved to this browser.", "ok");
+  } catch(e){ setStatus("keyStatus", "Could not save: "+e.message, "err"); }
+}
+function clearKeys(){
+  localStorage.removeItem(DB_NAME+"_keys");
+  ["key-openai","key-google","key-hf","key-pollinations"].forEach(id=>document.getElementById(id).value="");
+  setStatus("keyStatus", "Keys cleared.", "ok");
+}
+function loadKeys(){
+  try {
+    const raw = localStorage.getItem(DB_NAME+"_keys");
+    if(!raw) return {};
+    const k = JSON.parse(raw);
+    document.getElementById("key-openai").value = k.openai || "";
+    document.getElementById("key-google").value = k.google || "";
+    document.getElementById("key-hf").value = k.huggingface || "";
+    document.getElementById("key-pollinations").value = k.pollinations || "";
+    return k;
+  } catch(e){ return {}; }
+}
+function saveSettings(){
+  const s = {
+    defaultBackend: document.getElementById("defaultBackend").value,
+    styleLock: document.getElementById("styleLock").value,
+  };
+  localStorage.setItem(DB_NAME+"_settings", JSON.stringify(s));
+  document.getElementById("panelBackend").value = s.defaultBackend;
+  setStatus("keyStatus", "Settings saved.", "ok");
+}
+function loadSettings(){
+  try {
+    const raw = localStorage.getItem(DB_NAME+"_settings");
+    if(!raw) return;
+    const s = JSON.parse(raw);
+    document.getElementById("defaultBackend").value = s.defaultBackend || "pollinations";
+    document.getElementById("styleLock").value = s.styleLock || document.getElementById("styleLock").value;
+    document.getElementById("panelBackend").value = s.defaultBackend || "pollinations";
+  } catch(e){}
+}
+function setStatus(id, msg, cls){
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = "status " + (cls||"");
+}
+
+// ----------------------------------------------------------- story data ---
+function loadTemplate(){
+  const tmpl = {
+    issues: [
+      { number:1, slug:"issue-1", title:"Issue One", pages:[
+        { page:1, panels:[
+          { id:1, description:"Wide establishing shot, rain-soaked cyberpunk city at night, neon signs reflected in puddles.", image_prompt:null },
+          { id:2, description:"Hooded figure in an alley, glowing white eyes visible under the hood.", image_prompt:null }
+        ]}
+      ]}
+    ]
+  };
+  document.getElementById("storyJSON").value = JSON.stringify(tmpl, null, 2);
+}
+function importJSON(){ document.getElementById("importFile").click(); }
+function handleImportFile(ev){
+  const file = ev.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => { document.getElementById("storyJSON").value = e.target.result; };
+  reader.readAsText(file);
+}
+function parseStory(){
+  try {
+    story = JSON.parse(document.getElementById("storyJSON").value);
+    localStorage.setItem(DB_NAME+"_story", JSON.stringify(story));
+    setStatus("storyStatus", "Loaded. Switch to Panels & Art tab.", "ok");
+    renderPanelList();
+  } catch(e){
+    setStatus("storyStatus", "Invalid JSON: "+e.message, "err");
+  }
+}
+function downloadStory(){
+  const blob = new Blob([document.getElementById("storyJSON").value], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "story.json";
+  a.click();
+}
+function loadStoryFromStorage(){
+  const raw = localStorage.getItem(DB_NAME+"_story");
+  if(raw){
+    story = JSON.parse(raw);
+    document.getElementById("storyJSON").value = JSON.stringify(story, null, 2);
+    renderPanelList();
+  }
+}
+
+// ----------------------------------------------------------- art cache ---
+function artKey(issueSlug, page, panelId){ return `${DB_NAME}_art_${issueSlug}_p${page}_panel${panelId}`; }
+function getArt(issueSlug, page, panelId){ return localStorage.getItem(artKey(issueSlug,page,panelId)); }
+function setArt(issueSlug, page, panelId, dataUrl){
+  try { localStorage.setItem(artKey(issueSlug,page,panelId), dataUrl); }
+  catch(e){ alert("Browser storage is full. Export/download panels you want to keep, or clear old art."); }
+}
+
+// ------------------------------------------------------------- panels ----
+function renderPanelList(){
+  const list = document.getElementById("panelList");
+  list.innerHTML = "";
+  if(!story || !story.issues){
+    setStatus("panelsStatus", "No story loaded — go to Story Data tab first.", "err");
+    return;
+  }
+  let count = 0;
+  story.issues.forEach(issue=>{
+    issue.pages.forEach(page=>{
+      page.panels.forEach(panel=>{
+        count++;
+        const div = document.createElement("div");
+        div.className = "panel-item";
+        const existing = getArt(issue.slug, page.page, panel.id);
+        div.innerHTML = `
+          <strong>${issue.slug} — p${page.page} panel${panel.id}</strong>
+          <textarea data-issue="${issue.slug}" data-page="${page.page}" data-panel="${panel.id}"
+                    class="promptBox">${panel.image_prompt || panel.description}</textarea>
+          <div class="row">
+            <button class="btn secondary genBtn" data-issue="${issue.slug}" data-page="${page.page}" data-panel="${panel.id}">Generate</button>
+            ${existing ? `<button class="btn secondary dlBtn" data-issue="${issue.slug}" data-page="${page.page}" data-panel="${panel.id}">Download</button>` : ""}
+          </div>
+          <div class="status genStatus"></div>
+          ${existing ? `<img src="${existing}">` : ""}
+        `;
+        list.appendChild(div);
+      });
+    });
+  });
+  setStatus("panelsStatus", `${count} panels loaded.`, "ok");
+  list.querySelectorAll(".genBtn").forEach(b=>b.addEventListener("click", onGenerateClick));
+  list.querySelectorAll(".dlBtn").forEach(b=>b.addEventListener("click", onDownloadClick));
+}
+
+async function onGenerateClick(ev){
+  const btn = ev.target;
+  const {issue, page, panel} = btn.dataset;
+  const item = btn.closest(".panel-item");
+  const promptBox = item.querySelector(".promptBox");
+  const statusEl = item.querySelector(".genStatus");
+  const backend = document.getElementById("panelBackend").value;
+  const styleLock = document.getElementById("styleLock").value;
+  const fullPrompt = `${promptBox.value} ${styleLock}`;
+  btn.disabled = true;
+  statusEl.textContent = "Generating via " + backend + "...";
+  statusEl.className = "status genStatus";
+  try {
+    const dataUrl = await BACKENDS[backend](fullPrompt);
+    setArt(issue, page, panel, dataUrl);
+    let img = item.querySelector("img");
+    if(!img){ img = document.createElement("img"); item.appendChild(img); }
+    img.src = dataUrl;
+    statusEl.textContent = "Done.";
+    statusEl.className = "status genStatus ok";
+  } catch(e){
+    statusEl.textContent = "Failed: " + e.message;
+    statusEl.className = "status genStatus err";
+  }
+  btn.disabled = false;
+}
+function onDownloadClick(ev){
+  const {issue, page, panel} = ev.target.dataset;
+  const dataUrl = getArt(issue, page, panel);
+  const a = document.createElement("a");
+  a.href = dataUrl;
+  a.download = `${issue}_p${String(page).padStart(2,"0")}_panel${String(panel).padStart(2,"0")}.png`;
+  a.click();
+}
+async function generateAll(){
+  const btns = Array.from(document.querySelectorAll(".genBtn"));
+  for(const btn of btns){
+    const item = btn.closest(".panel-item");
+    if(item.querySelector("img")) continue; // skip ones already done
+    await onGenerateClick({target:btn});
+  }
+}
+
+// --------------------------------------------------------- backends ------
+// Each backend fn(prompt) -> Promise<dataURL string>. Add a new provider by
+// adding one entry here and one <option> in the two backend <select>s.
+async function blobToDataURL(blob){
+  return new Promise((res,rej)=>{
+    const r = new FileReader();
+    r.onload = ()=>res(r.result);
+    r.onerror = rej;
+    r.readAsDataURL(blob);
+  });
+}
+
+const BACKENDS = {
+  pollinations: async (prompt) => {
+    const keys = loadKeys();
+    const seed = Math.floor(Math.random()*1e9);
+    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=1024&height=1024&seed=${seed}&nologo=true&model=flux`;
+    const headers = {};
+    if(keys.pollinations) headers["Authorization"] = "Bearer " + keys.pollinations;
+    const resp = await fetch(url, {headers});
+    if(!resp.ok) throw new Error("Pollinations HTTP " + resp.status);
+    const blob = await resp.blob();
+    return blobToDataURL(blob);
+  },
+
+  huggingface: async (prompt) => {
+    const keys = loadKeys();
+    if(!keys.huggingface) throw new Error("No Hugging Face token set in Settings.");
+    const resp = await fetch("https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + keys.huggingface,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ inputs: prompt })
+    });
+    if(!resp.ok) throw new Error("Hugging Face HTTP " + resp.status + " — model may be loading, try again in ~20s.");
+    const blob = await resp.blob();
+    return blobToDataURL(blob);
+  },
+
+  openai: async (prompt) => {
+    const keys = loadKeys();
+    if(!keys.openai) throw new Error("No OpenAI key set in Settings.");
+    const resp = await fetch("https://api.openai.com/v1/images/generations", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + keys.openai,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ model: "gpt-image-1", prompt, size: "1024x1024" })
+    });
+    if(!resp.ok) throw new Error("OpenAI HTTP " + resp.status);
+    const json = await resp.json();
+    return "data:image/png;base64," + json.data[0].b64_json;
+  },
+
+  google: async (prompt) => {
+    const keys = loadKeys();
+    if(!keys.google) throw new Error("No Google key set in Settings.");
+    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=${keys.google}`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+    });
+    if(!resp.ok) throw new Error("Google HTTP " + resp.status + " — check billing is enabled on this key's project.");
+    const json = await resp.json();
+    const part = json.candidates?.[0]?.content?.parts?.find(p => p.inlineData);
+    if(!part) throw new Error("No image returned.");
+    return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+  },
+};
+
+// -------------------------------------------------------------- export ---
+function buildExport(){
+  const el = document.getElementById("exportPreview");
+  el.innerHTML = "";
+  if(!story) { el.textContent = "No story loaded."; return; }
+  story.issues.forEach(issue=>{
+    const h = document.createElement("h2");
+    h.textContent = `Issue ${issue.number}: ${issue.title || issue.slug}`;
+    el.appendChild(h);
+    issue.pages.forEach(page=>{
+      page.panels.forEach(panel=>{
+        const art = getArt(issue.slug, page.page, panel.id);
+        if(art){
+          const img = document.createElement("img");
+          img.src = art;
+          el.appendChild(img);
+        }
+      });
+    });
+  });
+}
+
+// --------------------------------------------------------------- init ----
+loadKeys();
+loadSettings();
+loadStoryFromStorage();
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load", ()=>{
+    navigator.serviceWorker.register("sw.js").catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
